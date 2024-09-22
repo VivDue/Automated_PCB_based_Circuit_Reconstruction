@@ -170,5 +170,4 @@ The code can be found in `Predict\Prediction_skripts.ipynb` with another example
 
 
 ### Component Detection
-<img src="assets/showroom_predict.png" alt="drawing" width="100%"/>
 <img src="assets/showroom_predict_2.png" alt="drawing" width="100%"/>
