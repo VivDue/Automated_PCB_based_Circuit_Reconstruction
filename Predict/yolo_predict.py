@@ -8,17 +8,16 @@ import numpy as np
 from importlib.metadata import version
 
 class YoloPredictor:
-    def __init__(self, yoloModel, input_file, output_dir, cut_ends):
+    def __init__(self, yoloModel, input_file, output_dir):
         self.input_file = input_file
         self.output_directory = output_dir
         self.final_out = output_dir
         self.yolomodel = yoloModel
-        self.cut_ends = cut_ends
         image_name = self.input_file.split('\\')[-1]
         image_name = image_name.split(".")[0]
         self.image_name = image_name
 
-    def predict_file(self):
+    def predict_file(self, patches, line_width_in, font_size_in):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         #print(f"Using device: {device}")
 
@@ -26,7 +25,10 @@ class YoloPredictor:
 
         self._create_directories(self.output_directory)
         self._patch_it(self.input_file, 768)
-        files = glob.glob(self.output_directory + "/patches/*")
+        if(patches):
+            files = glob.glob(self.output_directory + "/patches/*")
+        else:
+            files = glob.glob(self.input_file)
 
         model = YOLO(self.yolomodel)
         results = model.predict(files, save=False, verbose=False)
@@ -37,10 +39,13 @@ class YoloPredictor:
                 tmp = '00' + tmp
             if(len(tmp) == 2):
                 tmp = '0' + tmp
-            result.save(filename=f'{self.output_directory}/patches_predict/{self.image_name}_{tmp}.png')
-            #if i == 1:
-            #    result.save_txt(txt_file=f'{self.output_directory}/patches_predict/{self.image_name}_{str(i)}.txt')
-        self._recombine(self.input_file, 768)
+            if(patches):
+                #result.save(filename=f'{self.output_directory}/patches_predict/{self.image_name}_{tmp}+conf.png', conf=True, line_width=1, font_size=1)
+                result.save(filename=f'{self.output_directory}/patches_predict/{self.image_name}_{tmp}.png', conf=False, line_width=line_width_in, font_size=font_size_in)
+            else:
+                result.save(filename=f'{self.final_out}/__CUT/{self.image_name}_Cut.png', conf=False, line_width=line_width_in, font_size=font_size_in)
+        if(patches):
+            self._recombine(self.input_file, 768)
 
     def _recombine(self, input_file:str, patch_size:int)->None:
         original = cv2.imread(input_file)
@@ -72,11 +77,11 @@ class YoloPredictor:
         if main_cut is None:
             main_cut = main
 
-        cv2.imwrite(f'{self.final_out}/Cut/{self.image_name}_Cut.png', main_cut)
-        cv2.imwrite(f'{self.final_out}/All/{self.image_name}_all.png', main)
+        cv2.imwrite(f'{self.final_out}/__CUT/{self.image_name}_Cut.png', main_cut)
+        cv2.imwrite(f'{self.final_out}/__ALL/{self.image_name}_all.png', main)
 
-        cv2.imwrite(f'{self.output_directory}/{self.image_name}_Cut.png', main_cut)
-        cv2.imwrite(f'{self.output_directory}/{self.image_name}_all.png', main)
+        cv2.imwrite(f'{self.output_directory}/{self.image_name}___CUT.png', main_cut)
+        cv2.imwrite(f'{self.output_directory}/{self.image_name}___ALL.png', main)
 
 
 
@@ -151,8 +156,8 @@ class YoloPredictor:
         if not os.path.exists(output_dir + "/patches_predict"):
             os.makedirs(output_dir + "/patches_predict")
 
-        if not os.path.exists(self.final_out + "/Cut"):
-            os.makedirs(self.final_out + "/Cut")
-        if not os.path.exists(self.final_out + "/All"):
-            os.makedirs(self.final_out + "/All")
+        if not os.path.exists(self.final_out + "/__CUT"):
+            os.makedirs(self.final_out + "/__CUT")
+        if not os.path.exists(self.final_out + "/__ALL"):
+            os.makedirs(self.final_out + "/__ALL")
     
