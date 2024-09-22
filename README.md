@@ -1,11 +1,17 @@
 # PCB Reconstruct
 
+Component Detection 
 
 ## Introduction
 
-## Related Work
 
-## Usage
+![Mask Detection](assets\trace_detect_masking_process.png)
+
+![Net Detection](assets\trace_detect_netlist_process.png)
+
+![Model Overview](assets\nn_training_prediction.png)
+
+## Related Work
 
 ## Trace Detection
 
@@ -40,6 +46,29 @@ td.show(layer_images, None, net_list)
 
 ### Component Detection
 
+To predict the bounding boxes of components in an image using YOLO, you can use the `predict_file()` method. This method works as follows:
+
+1. **Patch Generation**: The input image (typically a PCB image) is split into smaller patches, each of size 768x768 pixels. This ensures that the YOLO model can process the image without running into memory or size limitations.
+2. **YOLO Prediction**: Each patch is fed into the YOLO model to detect the components. The detected components are saved as new images, with bounding boxes drawn around the detected objects.
+3. **Recombination**: Once all patches have been processed, the method recombines them into the original image format. This can be saved in two forms:
+   - The **Cut** image: Cropped to remove unnecessary borders.
+   - The **All** image: The full recombined image without any cropping.
+
+### Example
+
+```python
+from yolo_predict import YoloPredictor
+
+# files and directories
+input_file = "test\DSC_0250.jpg"
+output_directory = "Predictions"
+yolomodel = "models/yolov8m_updated_labels.pt"
+cut_ends = False
+
+# create an instance of the DesignatorCopy
+predictor = YoloPredictor(yolomodel, input_file, output_directory, cut_ends)
+predictor.predict_file()
+```
 
 ## Showroom
 
