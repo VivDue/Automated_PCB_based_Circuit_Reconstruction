@@ -3,7 +3,7 @@
 Component Detection 
 
 ## Introduction
-
+what its about.
 
 ![Mask Detection](assets/trace_detect_masking_process.png)
 
