@@ -1,14 +1,17 @@
 # Automated PCB based Circuit Reconstruction
 
-Component Detection 
-
 ## Introduction
-what its about.
+Reconstruction and analysis of PCB's by hand is very complex and time consuming. This work aims to make some aspects of this easier by introducing two tool for PCB-Image analysis.
 
+### Trace Detection
+The trace detection is used to create a netlist of the PCB and connect the components on it. An image of the bare PCB is need for the trace detection to work. The image is then processed in multiple steps to remove the silkscreen, create masks of all pads and traces and connect the top and bottom layers
 ![Mask Detection](assets/trace_detect_masking_process.png)
 
+In it's current form the resulting netlist is returned in 2 images, one shows all traces sorted by top and bottom layer in red and blue while the second image shows the connected netlist, giving each net a unique color.
 ![Net Detection](assets/trace_detect_netlist_process.png)
 
+### Component detection
+For the component detection multiple neural networks have been trained using the YOLOv8 framework and FPIC-Dataset (see related works), the best working one been the 3 net, with split images and updated labels. The network can detect the common SMD and THT components reliably and returns bounding boxes and segmentation masks for detected components.
 ![Model Overview](assets/nn_training_prediction.png)
 
 
