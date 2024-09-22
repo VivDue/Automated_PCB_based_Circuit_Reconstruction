@@ -3,15 +3,13 @@
 Component Detection 
 
 ## Introduction
-
+what its about.
 
 ![Mask Detection](assets/trace_detect_masking_process.png)
 
 ![Net Detection](assets/trace_detect_netlist_process.png)
 
 ![Model Overview](assets/nn_training_prediction.png)
-
-## Installation
 
 ## Related Work
 
