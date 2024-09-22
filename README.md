@@ -1,6 +1,9 @@
 # PCB Reconstruct
 
+
 ## Introduction
+
+## Related Work
 
 ## Usage
 
@@ -33,9 +36,12 @@ td.show(layer_images, masks)
 # Create net list and show results
 net_list = td.create_net_list(masks, mirror=[False, True])
 td.show(layer_images, None, net_list)
+```
 
 ### Component Detection
 
 
 ## Showroom
+
+
 
