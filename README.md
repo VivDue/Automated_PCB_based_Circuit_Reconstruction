@@ -11,6 +11,8 @@ Component Detection
 
 ![Model Overview](assets/nn_training_prediction.png)
 
+## Installation
+
 ## Related Work
 
 ## Trace Detection
