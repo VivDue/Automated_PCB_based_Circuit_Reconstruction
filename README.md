@@ -4,19 +4,38 @@
 Reconstruction and analysis of PCB's by hand is very complex and time consuming. This work aims to make some aspects of this easier by introducing two tool for PCB-Image analysis.
 
 ### Trace Detection
-The trace detection is used to create a netlist of the PCB and connect the components on it. An image of the bare PCB is need for the trace detection to work. The image is then processed in multiple steps to remove the silkscreen, create masks of all pads and traces and connect the top and bottom layers
+The trace detection is used to create a netlist of the PCB and connect the components on it. An image of the bare PCB is need for the trace detection to work. The image is then processed in multiple steps to remove the silkscreen, create masks of all pads and traces and connect the top and bottom layers.
 ![Mask Detection](assets/trace_detect_masking_process.png)
 
-In it's current form the resulting netlist is returned in 2 images, one shows all traces sorted by top and bottom layer in red and blue while the second image shows the connected netlist, giving each net a unique color.
+In it's current form the tool returns the resulting netlist in 2 images. One shows all traces sorted by top and bottom layer in red and blue while the second image shows the connected netlist, giving each net a unique color.
 ![Net Detection](assets/trace_detect_netlist_process.png)
 
 ### Component detection
 For the component detection multiple neural networks have been trained using the YOLOv8 framework and FPIC-Dataset (see related works), the best working one been the 3 net, with split images and updated labels. The network can detect the common SMD and THT components reliably and returns bounding boxes and segmentation masks for detected components.
 ![Model Overview](assets/nn_training_prediction.png)
 
-
-
 ## Related Work
+„EE 368 : Reverse Engineering of Printed Circuit Boards“ by Ben Johnson at Stanford University in 2013
+In his work Ben Johnson introduced a program he wrote in C++ to detect traces and pads on a PCB and detect components by comparing footprints from a library with the processed images.
+For our work we took inspiration from his approach to trace detection and expanded on it.
+
+
+„FPIC: A Novel Semantic Dataset for Optical PCB Assurance“ by Nathan Jessurun, Olivia P. Dizon-Paradis and others publicized in the „ACM Journal on Emerging Technologies in Computing Systems“ Volume 19; DOI: doi.org/10.1145/3588032
+In this work the authors introduce a publicly available labeled PCB-dataset for training of neural networks and describe the steps involved in it's creation. 
+We used this dataset to train our neural networks and later edited parts of it to improve the trainingresults.
+
+
+„PCBSegClassNet“ by Dhruv Makwana, Sai Chandra Teja R. and Sparsh Mittal publicized in „Expert Systems with Applications“ Volume 225; DOI: doi.org/10.1016/j.eswa.2023.120029	
+The first published project to use the FPIC-dataset to train a neural network for component detection and classification from images. The authors introduced multiple interesting ways to improve the learning behavior of their neural network which we used a inspiration for our preprocessing of the dataset.
+
+
+### Addition Works
+„Automated PCB Reverse Engineering“ by Stephan Kleber, Henrik Ferdinand Nölscher and Frank Kargl publicized on „ WOOT'17: Proceedings of the 11th USENIX Conference on Offensive Technologies“ in August 2017
+
+„FICS-PCB: A Multi-Modal Image Dataset for Automated Printed Circuit Board Visual Inspection” by Hangwei Lu, Olivia Paradis and others in July 2020
+
+
+
 
 ## Installation
 
@@ -75,9 +94,9 @@ To install Automated_PCB_based_Circuit_Reconstruction and its dependencies, foll
 
 6. You are now ready to use the Automated_PCB_based_Circuit_Reconstruction in your Python projects.
 
-## Trace Detection
+## Usage
 
-### Usage
+### Trace Detection
 
 The `TraceDetection` class provides functionality to process PCB layer images and generate masks, create net lists, and visualize the results. The key methods are:
 
@@ -106,6 +125,10 @@ net_list = td.create_net_list(masks, mirror=[False, True])
 td.show(layer_images, None, net_list)
 ```
 
+### Dataset Preprocessing
+To convert the FPIC-Datasets annotations into YOLOv8-Format our `S3A_yolo_converter` is used.
+The converter can be found in it's own repository. It does annotation conversion, Image-to-Patch splitting and HSI-CLAHE preprocessing.
+
 ### Component Detection
 
 To predict the bounding boxes of components in an image using YOLO, you can use the `predict_file()` method. This method works as follows:
@@ -122,17 +145,29 @@ To predict the bounding boxes of components in an image using YOLO, you can use 
 from yolo_predict import YoloPredictor
 
 # files and directories
-input_file = "test\DSC_0250.jpg"
+input_file = "Testimages\\b1.webp"
 output_directory = "Predictions"
-yolomodel = "models/yolov8m_updated_labels.pt"
-cut_ends = False
+yolomodel = "../models/yolov8m_updated_labels.pt"
 
-# create an instance of the DesignatorCopy
-predictor = YoloPredictor(yolomodel, input_file, output_directory, cut_ends)
-predictor.predict_file()
+# Whether the prediction should be used on the images as a whole
+#  or split the image in patches beforehand.
+#   (should be False for Net 1 and True for Net 2, 3 and 4)
+patches = True
+
+#Set line width for bounding boxes and font size
+line_width_in = 2
+font_size_in = 2
+
+# create an instance of the Predictor
+predictor = YoloPredictor(yolomodel, input_file, output_directory)
+predictor.predict_file(patches, line_width_in, font_size_in)
 ```
 
+The code can be found in `Predict\Prediction_skripts.ipynb` with another example to process whole folders in one go.
+
 ## Showroom
+### Trace Detection
 
 
-
+### Component Detection
+![Prediction Demo](assets/showroom_predict.png)
