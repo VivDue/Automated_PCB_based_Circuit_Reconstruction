@@ -1,9 +1,0 @@
-
-# Paths
-path: F:\Documents\Vivian\GitHub\yolov8_pcb_ReConstruct\yolov8_splitted_output
-train: train
-val: val
-
-# Classes
-nc: 28
-names: [R, C, U, Q, J, L, RA, D, RN, TP, IC, PET, CR, M, BTN, FB, CRA, SW, T, F, V, LED, S, QA, JP, CN, Y, VR]
