@@ -127,7 +127,9 @@ td.show(layer_images, None, net_list)
 
 ### Dataset Preprocessing
 To convert the FPIC-Datasets annotations into YOLOv8-Format our `S3A_yolo_converter` is used.
-The converter can be found in it's own [repository](https://github.com/VivDue/s3a_yolo_converter). It does annotation conversion, Image-to-Patch splitting and HSI-CLAHE preprocessing.
+The converter can be found in it's own [repository](https://github.com/VivDue/s3a_yolo_converter). 
+
+It does annotation conversion, Image-to-Patch splitting and HSI-CLAHE preprocessing.
 The updated annotations which we used to train the 3rd and 4th neural net can be found in `training/annotations_updated`.
 
 

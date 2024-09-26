@@ -165,8 +165,9 @@ class TraceDetection:
         """
 
         if save:
-            if not os.path.exists(path):
-                os.makedirs(path)
+            head,_ = os.path.split(path)
+            if not os.path.exists(head):
+                os.makedirs(head)
 
         if masks is not None:
             for i in range(len(layer_images)):
