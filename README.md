@@ -124,6 +124,17 @@ td.show(layer_images, masks)
 net_list = td.create_net_list(masks, mirror=[False, True])
 td.show(layer_images, None, net_list)
 ```
+### Acquiring the Dataset
+To access the full **FPIC training dataset**, you can visit the following link:
+
+[**FPIC Dataset: FICS-PCB Image Collection (FPIC)**](https://physicaldb.ece.ufl.edu/index.php/fics-pcb-image-collection-fpic/)
+
+This dataset provides PCB images that are crucial for **custom training** and creating **new models** for component and trace detection.
+
+However, **the dataset is not required** if you're only looking to **test** the provided models. All pre-trained models are included and ready for use. You only need the dataset if you plan to train new models or conduct custom training. 
+
+Please note, access to the dataset is gated by a **manual registration process**, which may take some time.
+
 
 ### Dataset Preprocessing
 To convert the FPIC-Datasets annotations into YOLOv8-Format our `S3A_yolo_converter` is used.
